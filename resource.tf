@@ -24,37 +24,34 @@ depends_on = [
  ]
 
 }
+resource "aws_security_group" "redshift_security_group" {
+  name        = "redshift-security-group"
+  description = "Redshift Security Group"
+  vpc_id      = aws_vpc.redshift_vpc.id
 
-resource "aws_default_security_group" "redshift_security_group" {
+  ingress {
+    from_port   = 5439
+    to_port     = 5439
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
- vpc_id     = "${aws_vpc.redshift_vpc.id}"
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-ingress {
+  tags = {
+    Name = "redshift-security-group"
+  }
 
-   from_port   = 5439
-
-   to_port     = 5439
-
-   protocol    = "tcp"
-
-   cidr_blocks = ["0.0.0.0/0"]
-
- }
-
-
-tags = {
-
-   Name = "redshift-sg"
-
- }
-
-depends_on = [
-
-   aws_vpc.redshift_vpc
-
- ]
-
+  depends_on = [
+    aws_vpc.redshift_vpc
+  ]
 }
+
 
 resource "aws_subnet" "redshift_subnet_1" {
 
@@ -62,7 +59,7 @@ resource "aws_subnet" "redshift_subnet_1" {
 
  cidr_block        = "${var.redshift_subnet_cidr_first}"
 
- availability_zone = "ap-south-1a"
+ availability_zone = "us-east-1a"
 
  map_public_ip_on_launch = "true"
 
@@ -86,7 +83,7 @@ resource "aws_subnet" "redshift_subnet_2" {
 
  cidr_block        = "${var.redshift_subnet_cidr_second}"
 
- availability_zone = "ap-south-1b"
+ availability_zone = "us-east-1b"
 
  map_public_ip_on_launch = "true"
 
@@ -207,6 +204,7 @@ resource "aws_redshift_cluster" "default" {
 depends_on = [
 
    aws_vpc.redshift_vpc,
+   
 
    aws_security_group.redshift_security_group,
 
@@ -216,4 +214,33 @@ depends_on = [
 
  ]
 
+}
+
+
+
+resource "aws_redshift_table" "example_table" {
+  cluster_identifier = aws_redshift_cluster.codewithmuh_cluster.id
+  database_name      = aws_redshift_cluster.codewithmuh_cluster.database_name
+  schema_name        = "public"
+  table_name         = "codewithmuh_table"
+
+  column {
+    name        = "column1"
+    data_type   = "integer"
+    max_size    = 4
+    encoding    = "raw"
+    dist_key    = true
+  }
+
+  column {
+    name        = "column2"
+    data_type   = "varchar"
+    max_size    = 255
+  }
+  
+  # Add more columns if needed
+
+  # Define your table constraints, if any
+
+  # Define any additional properties or settings for the table, if required
 }

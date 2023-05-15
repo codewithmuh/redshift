@@ -44,6 +44,28 @@ resource "aws_redshift_cluster_subnet_group" "example_subnet_group" {
   # Add more subnet group configuration options as needed
 }
 
+
+resource "aws_redshift_table" "example_table" {
+cluster_identifier = aws_redshift_cluster.default.id
+database_name = aws_redshift_cluster.default.database_name
+schema_name = "public"
+table_name = "codewithmuh_table"
+
+column {
+name = "column1"
+data_type = "integer"
+max_size = 4
+encoding = "raw"
+dist_key = true
+}
+
+column {
+name = "column2"
+data_type = "varchar"
+max_size = 255
+}
+}
+
 resource "aws_redshift_table" "example_table" {
   cluster_identifier = aws_redshift_cluster.codewithmuh_cluster.id
   database_name      = aws_redshift_cluster.codewithmuh_cluster.database_name

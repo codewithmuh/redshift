@@ -10,9 +10,9 @@ rs_cluster_identifier = "demo-cluster"
 
 rs_database_name = "database_cluster"
 
-rs_master_username = "demo"
+rs_master_username = "codewithmuh"
 
-rs_master_pass = "<PASSWORD>"
+rs_master_pass = "Codewithmuh1"
 
 rs_nodetype = "dc2.large"
 
