@@ -204,7 +204,7 @@ resource "aws_redshift_cluster" "default" {
 depends_on = [
 
    aws_vpc.redshift_vpc,
-   
+
 
    aws_security_group.redshift_security_group,
 
@@ -217,30 +217,3 @@ depends_on = [
 }
 
 
-
-resource "aws_redshift_table" "example_table" {
-  cluster_identifier = aws_redshift_cluster.codewithmuh_cluster.id
-  database_name      = aws_redshift_cluster.codewithmuh_cluster.database_name
-  schema_name        = "public"
-  table_name         = "codewithmuh_table"
-
-  column {
-    name        = "column1"
-    data_type   = "integer"
-    max_size    = 4
-    encoding    = "raw"
-    dist_key    = true
-  }
-
-  column {
-    name        = "column2"
-    data_type   = "varchar"
-    max_size    = 255
-  }
-  
-  # Add more columns if needed
-
-  # Define your table constraints, if any
-
-  # Define any additional properties or settings for the table, if required
-}
