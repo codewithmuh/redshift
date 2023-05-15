@@ -1,0 +1,72 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 3.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "us-east-1"  # Replace with your desired AWS region
+}
+
+resource "aws_redshift_cluster" "example_cluster" {
+  cluster_identifier        = "codewithmuh-cluster"
+  database_name             = "codewithmuh_db"
+  master_username           = "admin"
+  master_password           = "admin"  # Replace with your desired master password
+  node_type                 = "dc2.large"
+  cluster_type              = "single-node"
+  publicly_accessible       = true
+  iam_roles                 = ["arn:aws:iam::373903915873:role/service-role/AmazonRedshift-CommandsAccessRole-20230515T223824"]  # Replace with your desired IAM role ARN
+  
+  # Add more cluster configuration options as needed
+}
+
+resource "aws_redshift_cluster_parameter_group" "example_parameter_group" {
+  name        = "codewithmuh-cluster-parameter-group"
+  family      = "redshift-1.0"
+  description = "codewithmuh Redshift cluster parameter group"
+  parameter {
+    name  = "enable_user_activity_logging"
+    value = "true"
+  }
+  
+  # Add more parameter group configuration options as needed
+}
+
+resource "aws_redshift_cluster_subnet_group" "example_subnet_group" {
+  name        = "codewithmuh-subnet-group"
+  description = "codewithmuh Redshift subnet group"
+  subnet_ids  = ["subnet-12345678", "subnet-23456789"]  # Replace with your desired subnet IDs
+  
+  # Add more subnet group configuration options as needed
+}
+
+resource "aws_redshift_table" "example_table" {
+  cluster_identifier = aws_redshift_cluster.codewithmuh_cluster.id
+  database_name      = aws_redshift_cluster.codewithmuh_cluster.database_name
+  schema_name        = "public"
+  table_name         = "codewithmuh_table"
+
+  column {
+    name        = "column1"
+    data_type   = "integer"
+    max_size    = 4
+    encoding    = "raw"
+    dist_key    = true
+  }
+
+  column {
+    name        = "column2"
+    data_type   = "varchar"
+    max_size    = 255
+  }
+  
+  # Add more columns if needed
+
+  # Define your table constraints, if any
+
+  # Define any additional properties or settings for the table, if required
+}
